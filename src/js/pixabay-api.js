@@ -1,4 +1,4 @@
-export function getImage(image) {
+export async function getImage(image) {
   const BASE_URL = 'https://pixabay.com';
   const END_POINT = '/api/';
   const params = new URLSearchParams({
@@ -9,5 +9,14 @@ export function getImage(image) {
     safesearch: true,
   });
   const url = `${BASE_URL}${END_POINT}?${params}`;
-  return fetch(url).then(res => res.json());
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    return { error: error.message };
+  }
 }

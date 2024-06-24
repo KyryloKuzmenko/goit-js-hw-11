@@ -10,6 +10,7 @@ export const refs = {
 };
 
 refs.form.addEventListener('submit', e => {
+  refs.gallery.innerHTML = '';
   e.preventDefault();
   const value = e.target.elements.search.value.trim();
   if (value === '') {
@@ -22,22 +23,21 @@ refs.form.addEventListener('submit', e => {
   }
 
   showLoader();
-  const arr = getImage(value);
-  arr.then(data => {
-    if (data.hits.length === 0) {
-      iziToast.show({
-        message:
-          'Sorry, there are no images matching your search query. Please try again!',
-        position: 'topRight',
-        displayMode: 'once',
-      });
-    }
-    markup(data.hits);
-  });
-
-  arr.catch(err => {});
-  arr.finally(() => {
-    hideLoader();
-    refs.form.reset();
-  });
+  getImage(value)
+    .then(data => {
+      if (data.hits.length === 0) {
+        iziToast.show({
+          message:
+            'Sorry, there are no images matching your search query. Please try again!',
+          position: 'topRight',
+          displayMode: 'once',
+        });
+      }
+      markup(data.hits);
+    })
+    .catch(() => { })
+    .finally(() => {
+      hideLoader();
+      refs.form.reset();
+    });
 });
